@@ -1,0 +1,13 @@
+/* By shelly<mrshelly@hotmail.com> 2008-10 */
+body {
+	margin:5px 5px;
+	position:relative;
+	font-size:12px;
+}
+
+
+div.mulitPage {}
+div.mulitPage ul {}
+div.mulitPage ul li {list-style:none; float:left; width:18px; display:table;}
+
+div.clear {clear:both;}
