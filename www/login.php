@@ -4,6 +4,9 @@
 	/* 动作处理不允许直接调用 */
 		if (! defined("IN_SYS")) exit("Access Denied");
 
+	// 身份认证
+		require_once $rootPath."/lib/lib.php";
+
 	// 分页设置
 
 		$pp=isset($_GET['pp'])?intval($_GET['pp']):30;
@@ -26,6 +29,17 @@
 		$admin_pkey = (is_array($v))?$v[0][0]:'';
 		if($admin_pkey == ''){
 			exit("系统错误!");
+		}
+
+	// 检查登陆 已经登陆了,就不再登陆了.
+		$authInfo = (isset($_COOKIE['auth']))?urldecode(trim($_COOKIE['auth'])):'';
+		if($authInfo != ''){
+			$authInfo = decodeAuth($authInfo, $siteCfg['admin_pkey']);
+			if(($authInfo['uid'] == $siteCfg['admin_user']) && ($authInfo['upass'] == $siteCfg['admin_pass'])){
+				header('location: /?mod=sys&sys=admin');
+				exit;
+			}
+
 		}
 
 		$outArray = array();
