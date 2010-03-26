@@ -47,13 +47,14 @@
 		}
 
 	// 参数
-		$data = isset($_POST['data'])?str_replace('\\','',trim($_POST['data'])):"";
-		$data = json_decode($data,true);
-		$data = is_array($data)?$data:array();
 
-		if((!in_array('t', array_keys($data))) || (!in_array('c', array_keys($data)))){
+		if((!isset($_POST['t'])) || (!isset($_POST['c']))){
 			exit($retOut(array('ret'=>'err', 'msg'=>'参数错误!')));
 		}
+		$data = array(
+			't'=>trim($_POST['t']),
+			'c'=>trim($_POST['c']),
+		);
 
 		$outArray = array();
 

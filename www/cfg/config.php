@@ -15,6 +15,7 @@
 				'act'=>array(
 					'temp',												//测试用ACT模板
 					'login',											//登陆
+					'logout',											//退出登陆
 					'addnew',											//添加新闻
 					'delnew',											//删除新闻
 					'editnew',											//修改新闻

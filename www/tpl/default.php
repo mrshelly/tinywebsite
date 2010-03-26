@@ -59,12 +59,37 @@
 		</div>
 
 		<div class="foot">
-			<p>&copy;2010 power by <a href="http://www.mrshelly.com" target="_blank">mrshelly</a></p>
-			<p><a href="/?mod=sys&sys=login">后台登陆</a>
+			<p>&copy;2010 power by <a href="http://www.mrshelly.com" target="_blank">mrshelly</a></p><?php
+			if(!is_array($authInfo) && ($authInfo['uid'] != $siteCfg['admin_user'])){?>
+
+			<p><a class="act_login" href="/?mod=sys&sys=login">后台登陆</a><?php
+			}else{?>
+
+			<p><a class="act_logout" href="/?mod=sys&sys=logout">退出登陆</a><?php
+			}?>
+
 		</div>
 
 	</body>
 
 	<script type="text/javascript">
+		var refUrl = '<?php echo $ref; ?>';
+		$("div.foot p a.act_logout").click(function(){
+			$.post('/?mod=act&act=logout&o=jssz&t='+Math.random(), {}, function(ret){
+				try{
+					eval(ret);
+				}catch(e){
+					var retObj = {'ret':'err', 'msg':'unknow'};
+				}
+
+				if((typeof(retObj['ret']) != 'undefined') && retObj['ret'] == 'ok'){
+					document.location.href = refUrl;
+				}else{
+					alert(retObj['msg']);
+					return false;
+				}
+			});
+			return false;
+		});
 	</script>
 </html>

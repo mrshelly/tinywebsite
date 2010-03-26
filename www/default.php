@@ -10,6 +10,9 @@
 		$p = isset($_GET['p'])?intval($_GET['p']):1;
 		$start=($p-1)*$pp;
 
+	// 身份认证
+		require_once $rootPath."/lib/lib.php";
+
 	/* 初始化数据库实例 */
 	if(!file_exists($siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db'])){
 		header("location: /?mod=sys&sys=admin");
@@ -17,6 +20,29 @@
 	}else{
 		$db = new PDO('sqlite:'.$siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db']); 
 	}
+
+	//
+		$ref=isset($_GET['ref'])?trim($_GET['ref']):'/';
+
+	// 取网站公钥
+		$k = 'admin_pkey';
+		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
+		$sth = $db->prepare($sql);
+		$sth->execute(array('key'=>$k));
+		$v = $sth->fetchAll();
+
+		$admin_pkey = (is_array($v))?$v[0][0]:'';
+		if($admin_pkey == ''){
+			exit("系统错误!");
+		}
+
+	// 检查登陆
+		$authInfo = (isset($_COOKIE['auth']))?urldecode(trim($_COOKIE['auth'])):'';
+		if($authInfo == ''){
+			$authInfo = false;
+		}else{
+			$authInfo = decodeAuth($authInfo, $siteCfg['admin_pkey']);
+		}
 
 		$outArray = array();
 

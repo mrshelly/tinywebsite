@@ -34,7 +34,7 @@
 			<ul class="newinfo">
 				<li class="crts_<?php echo $outArray['new']['id']; ?>"><?php echo date("Y-m-d", $outArray['new']['crts']); ?></li>
 			</ul>
-			<ul class="newcontent"><?php echo $outArray['new']['content']; ?>
+			<ul class="newcontent"><?php echo stripslashes($outArray['new']['content']); ?>
 
 			</ul>
 		</div>

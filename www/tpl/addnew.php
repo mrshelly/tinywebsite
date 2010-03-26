@@ -82,7 +82,7 @@
 			postObj['t'] = $('input.title', $(this).parent().parent().parent()).val();
 			postObj['c'] = $('textarea.content', $(this).parent().parent().parent()).html();
 
-			$.post('/?mod=act&act=addnew&o=jssz&t='+Math.random(), {'data':$.toJSON(postObj)}, function(ret){
+			$.post('/?mod=act&act=addnew&o=jssz&t='+Math.random(), postObj, function(ret){
 				try{
 					eval(ret);
 				}catch(e){

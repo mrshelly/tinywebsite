@@ -53,11 +53,10 @@
 
 		$outArray['menu'] = (is_array($v))?json_decode($v[0][0], true):array();
 
-
 	// 取新闻
-		$sql = "SELECT id, title, content, crts FROM news LIMIT :pp OFFSET :p";
+		$sql = "SELECT id, title, content, crts FROM news ORDER BY id DESC LIMIT :p, :pp";
 		$sth = $db->prepare($sql);
-		$sth->execute(array(':p'=>$p, ':pp'=>$pp));
+		$ret = $sth->execute(array(':p'=>$p-1, ':pp'=>$pp));
 		$v = $sth->fetchAll();
 
 		$outArray['news'] = (is_array($v))?$v:array();
