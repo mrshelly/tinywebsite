@@ -29,10 +29,10 @@
 			case	"act"		:
 				$actMod=isset($_GET['act'])?trim($_GET['act']):'';
 				if (!in_array($actMod, $siteCfg['index']['mod']['act'])){
-					exit($retOut(array('ret'=>'err', 'msg'=>'act part error!')));
+					exit($retOut(array('ret'=>'err', 'msg'=>'act part error1!')));
 				}
 				if(!file_exists($rootPath."/act/".$actMod.".php")){
-					exit($retOut(array('ret'=>'err', 'msg'=>'act part error!')));
+					exit($retOut(array('ret'=>'err', 'msg'=>'act part error2!')));
 				}
 				require $rootPath."/act/".$actMod.".php";
 				break;
