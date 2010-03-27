@@ -39,7 +39,7 @@
 				<li class="crts"><?php echo date("Y-m-d", $v['crts']); ?></li><?php
 				if($authInfo['uid'] == $siteCfg['admin_user']){?>
 
-				<li class="op_edit"><a href="/?mod=sys&sys=editnew&id=<?php echo $v['id']; ?>" target="_blank">修改</a></li>
+				<li class="op_edit"><a href="/?mod=sys&sys=editnew&id=<?php echo $v['id']; ?>">修改</a></li>
 				<li class="op_del"><a href="/?mod=act&sys=delnew&id=<?php echo $v['id']; ?>">删除</a></li><?php
 				}?>
 
