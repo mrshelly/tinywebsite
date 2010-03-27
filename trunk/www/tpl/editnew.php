@@ -35,7 +35,7 @@
 				<li><label>标题</label><input type="hidden" class="id" value="<?php echo $outArray['new']['id']; ?>" /><input type="text" class="title" value="<?php echo $outArray['new']['title']; ?>" /></li>
 				<li>
 					<label>内容</label>
-					<textarea class="content" id="content"><?php echo htmlspecialchars($outArray['new']['content']); ?></textarea></li>
+					<textarea class="content" id="content"><?php echo htmlspecialchars(stripslashes($outArray['new']['content'])); ?></textarea></li>
 			</ul>
 			<ul class="operate">
 				<li><input type="button" class="bt_submit" value="OK" /></li>
