@@ -47,39 +47,43 @@
 		}
 
 	// 参数
-		$data = isset($_POST['data'])?str_replace('\\','',trim($_POST['data'])):"";
-		$data = json_decode($data,true);
-		$data = is_array($data)?$data:array();
 
-		if(!in_array('id', array_keys($data))){
+		if((!isset($_POST['n'])) || (!isset($_POST['c']))){
 			exit($retOut(array('ret'=>'err', 'msg'=>'参数错误!')));
 		}
+		$data = array(
+			'n'=>trim($_POST['n']),
+			'c'=>trim($_POST['c']),
+		);
 
 		$outArray = array();
 
 	// 取新闻数据
-		$newid = intval($data['id']);
-		$sql = "SELECT id FROM news WHERE id=:id LIMIT 1";
-		$sth = $db->prepare($sql);
-		$ret = $sth->execute(array(':id'=>$newid));
-		$v = $sth->fetchAll();
 
-		$queryid = (is_array($v))?intval($v[0]['id']):0;
-
-		if($newid != $queryid){
-			exit($retOut(array('ret'=>'ok', 'msg'=>'未知错误')));
+		if(trim($data['n']) == ''){
+			exit($retOut(array('ret'=>'err', 'msg'=>'品名不能为空!')));
+		}
+		if(trim($data['c']) == ''){
+			exit($retOut(array('ret'=>'err', 'msg'=>'描述不能为空!')));
 		}
 
-	// 删除新闻
-		$sql = "DELETE FROM news WHERE id=:id";
-		$sth = $db->prepare($sql);
-		$ret = $sth->execute(array(':id'=>$newid));
+		$db->beginTransaction();
+		$data['n'] = $db->quote($data['n']);
+		$data['c'] = $db->quote(htmlspecialchars_decode(trim($data['c'])));
+		$data['t'] = time();
+		$sql = "INSERT INTO product (name, content, crts) VALUES (:name, :content, :crts)";
 
-		if($ret){
-			exit($retOut(array('ret'=>'ok', 'msg'=>'成功', 'debug'=>'')));
+		$sth = $db->prepare($sql);
+		$ret = $sth->execute(array(':name'=>$data['n'], ':content'=>$data['c'], ':crts'=>$data['t']));
+		$retid = $db->lastInsertId();
+
+		//$db->rollback();
+		if($retid >0){
+			$db->commit();
 		}else{
-			exit($retOut(array('ret'=>'ok', 'msg'=>'未知错误', 'debug'=>$sth->errorInfo())));
+			$db->rollback();
 		}
+		exit($retOut(array('ret'=>'ok', 'msg'=>'成功', 'data'=>array('id'=>$retid,), 'debug'=>'')));
 
 	// 关闭数据库连接
 		//$db->close();

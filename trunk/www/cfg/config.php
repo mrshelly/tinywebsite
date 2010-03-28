@@ -19,6 +19,7 @@
 					'addnew',											//添加新闻
 					'delnew',											//删除新闻
 					'editnew',											//修改新闻
+					'addproduct',										//添加商品
 				),
 			),
 		),

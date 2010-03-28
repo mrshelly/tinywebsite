@@ -14,23 +14,10 @@
 		require_once $rootPath."/lib/lib.php";
 
 	/* 初始化数据库实例 */
-	if(!file_exists($siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db'])){
-		header("location: /?mod=sys&sys=admin");
-		exit;
-	}else{
 		$db = new PDO('sqlite:'.$siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db']); 
 		$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
-	}
 
-	//
-		$ref=isset($_GET['ref'])?trim($_GET['ref']):'/?mod=sys&sys=news';
-
-	// 新闻ID
-		$newid = isset($_GET['id'])?intval($_GET['id']):0;
-		if($newid == 0){
-			header("location: /?mod=sys&sys=news");
-			exit;
-		}
+		$outArray = array();
 
 	// 取网站公钥
 		$k = 'admin_pkey';
@@ -41,19 +28,13 @@
 
 		$admin_pkey = (is_array($v))?$v[0]['v']:'';
 		if($admin_pkey == ''){
-			exit("系统错误!");
+			exit($retOut(array('ret'=>'err', 'msg'=>'系统错误!')));
 		}
 
-	// 检查登陆
 		$authInfo = (isset($_COOKIE['auth']))?urldecode(trim($_COOKIE['auth'])):'';
-		if($authInfo == ''){
-			header('location: /?mod=sys&sys=login');
-			exit;
-		}else{
+		if($authInfo != ''){
 			$authInfo = decodeAuth($authInfo, $siteCfg['admin_pkey']);
 		}
-
-		$outArray = array();
 
 	// 取网站LOGO url
 		$k = 'logo_url';
@@ -73,20 +54,18 @@
 
 		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();
 
-
-	// 取新闻
-		$k = "{$newid}";
-		$sql = "SELECT id, title, content, crts FROM news WHERE id=:id LIMIT 1";
+	// 取产品
+		$part = 'product';
+		$sql = "SELECT id, name, img, content, crts FROM product ORDER BY id DESC LIMIT :p, :pp";
 		$sth = $db->prepare($sql);
-		$sth->execute(array(':id'=>$k));
+		$ret = $sth->execute(array(':p'=>$p-1, ':pp'=>$pp));
 		$v = $sth->fetchAll();
 
-		$outArray['new'] = (is_array($v))?$v[0]:array();
+		$outArray['products'] = (is_array($v))?$v:array();
 
 /* 组织SQL语句 */
 
-		require_once $rootPath."/tpl/editnew.php";
-
+		require_once $rootPath."/tpl/products.php";
 
 	// 关闭数据库连接
 		//$db->close();

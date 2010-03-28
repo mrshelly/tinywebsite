@@ -16,6 +16,7 @@
 	/* 初始化数据库实例 */
 	if(!file_exists($siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db'])){
 		$db = new PDO('sqlite:'.$siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db']); 
+		$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
 		$sql = <<<EOT
 CREATE TABLE config (
   id            integer PRIMARY KEY NOT NULL,
@@ -92,6 +93,7 @@ EOT;
 
 	}else{
 		$db = new PDO('sqlite:'.$siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db']); 
+		$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
 	}
 
 	// 取网站公钥
@@ -101,7 +103,7 @@ EOT;
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$admin_pkey = (is_array($v))?$v[0][0]:'';
+		$admin_pkey = (is_array($v))?$v[0]['v']:'';
 		if($admin_pkey == ''){
 			exit("系统错误!");
 		}
@@ -136,7 +138,7 @@ EOT;
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['logo_url'] = (is_array($v))?$v[0][0]:'';
+		$outArray['logo_url'] = (is_array($v))?$v[0]['v']:'';
 
 	// 取网站栏目
 		$k = 'menu';
@@ -145,7 +147,7 @@ EOT;
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['menu'] = (is_array($v))?json_decode($v[0][0], true):array();
+		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();
 
 
 	// 取首页新闻数
@@ -155,7 +157,7 @@ EOT;
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['home_news_cnt'] = (is_array($v))?intval($v[0][0]):0;
+		$outArray['home_news_cnt'] = (is_array($v))?intval($v[0]['v']):0;
 
 	// 取首页新闻
 		$k = 'home_news';
@@ -173,7 +175,7 @@ EOT;
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['home_product_cnt'] = (is_array($v))?intval($v[0][0]):0;
+		$outArray['home_product_cnt'] = (is_array($v))?intval($v[0]['v']):0;
 
 	// 取首页产品
 		$k = 'home_product';
