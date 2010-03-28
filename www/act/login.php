@@ -23,7 +23,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$admin_pkey = (is_array($v))?$v[0][0]:'';
+		$admin_pkey = (is_array($v))?$v[0]['v']:'';
 		if($admin_pkey == ''){
 			exit($retOut(array('ret'=>'err', 'msg'=>'系统错误!')));
 		}
@@ -46,7 +46,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['admin_user'] = (is_array($v))?$v[0][0]:'';
+		$outArray['admin_user'] = (is_array($v))?$v[0]['v']:'';
 
 		if( trim($data['u']) != $outArray['admin_user']){
 			exit($retOut(array('ret'=>'err', 'msg'=>'参数错误!u')));
@@ -59,7 +59,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['admin_pass'] = (is_array($v))?json_decode($v[0][0], true):array();
+		$outArray['admin_pass'] = (is_array($v))?json_decode($v[0]['v'], true):array();
 
 		if( trim($data['p']) != $outArray['admin_pass']){
 			exit($retOut(array('ret'=>'err', 'msg'=>'参数错误!p')));

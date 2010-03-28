@@ -15,6 +15,7 @@
 
 	/* 初始化数据库实例 */
 		$db = new PDO('sqlite:'.$siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db']); 
+		$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
 
 	//
 		$ref=isset($_GET['ref'])?trim($_GET['ref']):'/?mod=sys&sys=admin';
@@ -26,7 +27,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$admin_pkey = (is_array($v))?$v[0][0]:'';
+		$admin_pkey = (is_array($v))?$v[0]['v']:'';
 		if($admin_pkey == ''){
 			exit("系统错误!");
 		}
@@ -51,7 +52,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['logo_url'] = (is_array($v))?$v[0][0]:'';
+		$outArray['logo_url'] = (is_array($v))?$v[0]['v']:'';
 
 	// 取网站栏目
 		$k = 'menu';
@@ -60,7 +61,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['menu'] = (is_array($v))?json_decode($v[0][0], true):array();
+		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();
 
 
 /* 组织SQL语句 */

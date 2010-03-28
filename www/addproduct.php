@@ -25,13 +25,6 @@
 	//
 		$ref=isset($_GET['ref'])?trim($_GET['ref']):'/?mod=sys&sys=news';
 
-	// 新闻ID
-		$newid = isset($_GET['id'])?intval($_GET['id']):0;
-		if($newid == 0){
-			header("location: /?mod=sys&sys=news");
-			exit;
-		}
-
 	// 取网站公钥
 		$k = 'admin_pkey';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
@@ -74,18 +67,10 @@
 		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();
 
 
-	// 取新闻
-		$k = "{$newid}";
-		$sql = "SELECT id, title, content, crts FROM news WHERE id=:id LIMIT 1";
-		$sth = $db->prepare($sql);
-		$sth->execute(array(':id'=>$k));
-		$v = $sth->fetchAll();
-
-		$outArray['new'] = (is_array($v))?$v[0]:array();
-
 /* 组织SQL语句 */
+		$part = 'product';
 
-		require_once $rootPath."/tpl/editnew.php";
+		require_once $rootPath."/tpl/addproduct.php";
 
 
 	// 关闭数据库连接

@@ -23,7 +23,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$admin_pkey = (is_array($v))?$v[0][0]:'';
+		$admin_pkey = (is_array($v))?$v[0]['v']:'';
 		if($admin_pkey == ''){
 			exit($retOut(array('ret'=>'err', 'msg'=>'系统错误!')));
 		}

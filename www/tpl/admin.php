@@ -47,7 +47,7 @@
 		</div>
 
 		<div class="home_product_list">
-			<h3><?php echo $outArray['menu']['product']['name']; ?></h3><?php
+			<h3><?php echo $outArray['menu']['product']['name']; ?></h3><a href="/?mod=sys&sys=addproduct">添加</a><?php
 				if(is_array($outArray['home_product']) && count($outArray['home_product'])>0){
 					foreach($outArray['home_product'] as $k=>$v){?>
 

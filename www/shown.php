@@ -12,6 +12,7 @@
 
 	/* 初始化数据库实例 */
 		$db = new PDO('sqlite:'.$siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db']); 
+		$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
 
 	// 新闻ID
 		$id = isset($_GET['id'])?intval($_GET['id']):0;
@@ -29,7 +30,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['logo_url'] = (is_array($v))?$v[0][0]:'';
+		$outArray['logo_url'] = (is_array($v))?$v[0]['v']:'';
 
 	// 取网站栏目
 		$k = 'menu';
@@ -38,7 +39,7 @@
 		$sth->execute(array('key'=>$k));
 		$v = $sth->fetchAll();
 
-		$outArray['menu'] = (is_array($v))?json_decode($v[0][0], true):array();
+		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();
 
 
 	// 取新闻
