@@ -27,6 +27,45 @@ class Token{
 
 }
 
+// getNodeMenuHTML 生成菜单HTML
+function getNodeMenuHTML($menucfg, $node, $level=1){
+	if(empty($node)){
+		return '';
+	}
+
+	$indent = str_repeat("\t", $level);
+	$ret = '';
+
+	if(in_array('url', array_keys($menucfg[$node]))){
+		if(in_array('dir', array_keys($menucfg[$node]))){
+			$ret .= $indent."\t".'<li><a href="'.$menucfg[$node]['url'].'" class="dir">'.$menucfg[$node]['name']."</a>\n";
+			$ret .= $indent."\t\t<ul>\n";
+
+			foreach($menucfg[$node]['dir'] as $k=>$v){
+				$ret .= getNodeMenuHTML($menucfg[$node]['dir'], $k, $level+1);
+			}
+			$ret .= $indent."\t\t</ul>\n";
+			$ret .= $indent."\t</li>\n";
+		}else{
+			$ret .= $indent."\t".'<li><a href="'.$menucfg[$node]['url'].'">'.$menucfg[$node]['name']."</a></li>\n";
+		}
+	}else{
+		if(in_array('dir', array_keys($menucfg[$node]))){
+			$ret .= $indent."\t".'<li><span class="dir">'.$menucfg[$node]['name']."</span>\n";
+			$ret .= $indent."\t\t<ul>\n";
+
+			foreach($menucfg[$node]['dir'] as $k=>$v){
+				$ret .= getNodeMenuHTML($menucfg[$node]['dir'], $k, $level+1);
+			}
+			$ret .= $indent."\t\t</ul>\n";
+			$ret .= $indent."\t</li>\n";
+		}else{
+			$ret .= $indent."\t".'<li><span>'.$menucfg[$node]['name']."</span></li>\n";
+		}
+	}
+	return $ret;
+}
+
 		function decodeAuth($v, $pkey){
 			$len = strlen(base64_decode($v));
 			$xorstr = str_pad($pkey, $len, $pkey);
