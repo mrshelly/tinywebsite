@@ -26,12 +26,11 @@ CREATE TABLE config (
 EOT;
 		$sth = $db->prepare($sql);
 		$sth->execute();
-
 		$sql = "INSERT INTO config (k, v) VALUES (:k, :v);";
 		$sth = $db->prepare($sql);
 		$sth->execute(array(':k'=>'admin_user', ':v'=>$siteCfg['admin_user']));
 
-		$sql = "INSERT INTO config (k, v) VALUES (:k, :v);";
+		$sql = "INSERT INTO config (k, v) VALUES (:k, :v);"; 
 		$sth = $db->prepare($sql);
 		$sth->execute(array(':k'=>'admin_pass', ':v'=>$siteCfg['admin_pass']));
 
@@ -100,7 +99,7 @@ EOT;
 		$k = 'admin_pkey';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$admin_pkey = (is_array($v))?$v[0]['v']:'';
@@ -135,7 +134,7 @@ EOT;
 		$k = 'logo_url';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['logo_url'] = (is_array($v))?$v[0]['v']:'';
@@ -144,7 +143,7 @@ EOT;
 		$k = 'menu';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();
@@ -154,7 +153,7 @@ EOT;
 		$k = 'home_news_cnt';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['home_news_cnt'] = (is_array($v))?intval($v[0]['v']):0;
@@ -163,7 +162,7 @@ EOT;
 		$k = 'home_news';
 		$sql = "SELECT id, title, content, crts FROM news ORDER BY id DESC LIMIT {$outArray['home_news_cnt']}";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['home_news'] = (is_array($v))?$v:array();
@@ -172,7 +171,7 @@ EOT;
 		$k = 'home_product_cnt';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['home_product_cnt'] = (is_array($v))?intval($v[0]['v']):0;
@@ -181,7 +180,7 @@ EOT;
 		$k = 'home_product';
 		$sql = "SELECT id, name, img, content, crts FROM product ORDER BY id DESC LIMIT {$outArray['home_product_cnt']}";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['home_product'] = (is_array($v))?$v:array();
