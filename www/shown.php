@@ -27,7 +27,7 @@
 		$k = 'logo_url';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['logo_url'] = (is_array($v))?$v[0]['v']:'';
@@ -36,7 +36,7 @@
 		$k = 'menu';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();

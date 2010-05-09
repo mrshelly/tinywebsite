@@ -24,7 +24,7 @@
 			),
 		),
 		'admin_user'=>'site_admin',										//后台用户
-		'admin_pass'=>'Q@W#E$',											//后台密码
+		'admin_pass'=>md5('Q@W#E$'),											//后台密码
 		'admin_pkey'=>'Q@W#E$',											//后台加密公钥
 		'logo_url'=>'/res/img/logo.gif',								//首页LOGO
 		'home_news_cnt'=>'6',											//首页显示新闻数

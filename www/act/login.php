@@ -20,7 +20,7 @@
 		$k = 'admin_pkey';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$admin_pkey = (is_array($v))?$v[0]['v']:'';
@@ -43,7 +43,7 @@
 		$k = 'admin_user';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
 
 		$outArray['admin_user'] = (is_array($v))?$v[0]['v']:'';
@@ -56,17 +56,15 @@
 		$k = 'admin_pass';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
 		$sth = $db->prepare($sql);
-		$sth->execute(array('key'=>$k));
+		$sth->execute(array(':key'=>$k));
 		$v = $sth->fetchAll();
-
 		$outArray['admin_pass'] = (is_array($v))?json_decode($v[0]['v'], true):array();
-
-		if( trim($data['p']) != $outArray['admin_pass']){
+		if( md5(trim($data['p'])) != $outArray['admin_pass']){
 			exit($retOut(array('ret'=>'err', 'msg'=>'参数错误!p')));
 		}
 
 	// 创建登陆
-		$authInfo = encodeAuth(array('uid'=>trim($data['u']), 'upass'=>trim($data['p'])), $siteCfg['admin_pkey']);
+		$authInfo = encodeAuth(array('uid'=>trim($data['u']), 'upass'=>md5(trim($data['p']))), $siteCfg['admin_pkey']);
 
 		setcookie('auth', urlencode($authInfo), time()+2*3600);
 		exit($retOut(array('ret'=>'ok', 'msg'=>'成功')));
