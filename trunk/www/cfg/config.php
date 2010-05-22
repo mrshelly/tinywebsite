@@ -11,6 +11,7 @@
 			'mod'=>array(
 				'api'=>array(
 					'temp',												//测试用API模板
+					'getNewsCateInfo',									//新闻分类信息
 				),
 				'act'=>array(
 					'temp',												//测试用ACT模板
@@ -24,7 +25,7 @@
 			),
 		),
 		'admin_user'=>'site_admin',										//后台用户
-		'admin_pass'=>md5('Q@W#E$'),											//后台密码
+		'admin_pass'=>md5('Q@W#E$'),									//后台密码
 		'admin_pkey'=>'Q@W#E$',											//后台加密公钥
 		'logo_url'=>'/res/img/logo.gif',								//首页LOGO
 		'home_news_cnt'=>'6',											//首页显示新闻数
@@ -39,11 +40,11 @@
 				'dir'=>array(
 					'ent_news'=>array(
 						'name'=>'企业新闻',
-						'url'=>'/?mod=sys&sys=news&ntype=ent',
+						'url'=>'/?mod=sys&sys=news&ncate=2',
 					),
 					'spc_news'=>array(
 						'name'=>'业界新闻',
-						'url'=>'/?mod=sys&sys=news&ntype=spc',
+						'url'=>'/?mod=sys&sys=news&ncate=3',
 					),
 				),
 				'url'=>'/?mod=sys&sys=news',

@@ -51,6 +51,7 @@
 		if((!isset($_POST['t'])) || (!isset($_POST['c']))){
 			exit($retOut(array('ret'=>'err', 'msg'=>'参数错误!')));
 		}
+		//stripslashes
 		$data = array(
 			't'=>trim($_POST['t']),
 			'c'=>trim($_POST['c']),
