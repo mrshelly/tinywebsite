@@ -19,9 +19,9 @@
 		$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
 		$sql = <<<EOT
 CREATE TABLE config (
-  id            integer PRIMARY KEY NOT NULL,
-  k       varchar(50),
-  v       text
+	id			integer PRIMARY KEY NOT NULL,
+	k			varchar(50),
+	v			text
 );
 EOT;
 		$sth = $db->prepare($sql);
@@ -54,24 +54,55 @@ EOT;
 		$sth = $db->prepare($sql);
 		$sth->execute(array(':k'=>'home_product_cnt', ':v'=>$siteCfg['home_product_cnt']));
 
+// 新闻分类
 $sql = <<<EOT
-CREATE TABLE news (
-  id          integer PRIMARY KEY NOT NULL,
-  title       varchar(200),
-  content     text,
-  crts        integer
+CREATE TABLE news_cate (
+	id			integer PRIMARY KEY NOT NULL,
+	catename	varchar(200),
+	pid			integer
 );
 EOT;
 		$sth = $db->prepare($sql);
 		$sth->execute();
 
+		$sql = "INSERT INTO news_cate (catename, pid) VALUES (:k, :v);";
+		$sth = $db->prepare($sql);
+		$sth->execute(array(':k'=>'公司新闻', ':v'=>0));
+		$sth = $db->prepare($sql);
+		$sth->execute(array(':k'=>'企业新闻', ':v'=>1));
+		$sth = $db->prepare($sql);
+		$sth->execute(array(':k'=>'业界新闻', ':v'=>1));
+
+// 新闻与分类关联
+$sql = <<<EOT
+CREATE TABLE rel_new_cate (
+	newid		integer,
+	cateid		integer
+);
+EOT;
+		$sth = $db->prepare($sql);
+		$sth->execute();
+
+// 新闻
+$sql = <<<EOT
+CREATE TABLE news (
+	id			integer PRIMARY KEY NOT NULL,
+	title		varchar(200),
+	content		text,
+	crts		integer
+);
+EOT;
+		$sth = $db->prepare($sql);
+		$sth->execute();
+
+// 产品
 $sql = <<<EOT
 CREATE TABLE product (
-  id          integer PRIMARY KEY NOT NULL,
-  name        varchar(200),
-  img         varchar(200),
-  content     text,
-  crts        integer
+	id			integer PRIMARY KEY NOT NULL,
+	name		varchar(200),
+	img			varchar(200),
+	content		text,
+	crts		integer
 );
 EOT;
 		$sth = $db->prepare($sql);
@@ -79,12 +110,12 @@ EOT;
 
 		$sql = <<<EOT
 CREATE TABLE gbook (
-  id         integer PRIMARY KEY NOT NULL,
-  pid        integer,
-  name       varchar(30),
-  email      varchar(100),
-  content    varchar(200),
-  crts       integer
+	id			integer PRIMARY KEY NOT NULL,
+	pid			integer,
+	name		varchar(30),
+	email		varchar(100),
+	content		varchar(200),
+	crts		integer
 );
 EOT;
 		$sth = $db->prepare($sql);
@@ -162,7 +193,7 @@ EOT;
 		$k = 'home_news';
 		$sql = "SELECT id, title, content, crts FROM news ORDER BY id DESC LIMIT {$outArray['home_news_cnt']}";
 		$sth = $db->prepare($sql);
-		$sth->execute(array(':key'=>$k));
+		$sth->execute();
 		$v = $sth->fetchAll();
 
 		$outArray['home_news'] = (is_array($v))?$v:array();
@@ -193,18 +224,18 @@ EOT;
 		/*
 		$sql = <<<EOT
 CREATE TABLE details (
-  id            integer PRIMARY KEY NOT NULL,
-  op_type       varchar(45),
-  order_id      varchar(12),
+  id			integer PRIMARY KEY NOT NULL,
+  op_type	   varchar(45),
+  order_id	  varchar(12),
   order_client  varchar(100),
-  ordertime     integer,
-  product_id    integer,
-  quanlity      float(10,4),
-  amount        float(10,4),
-  price         float(10,4),
-  operator      varchar(50),
-  others        varchar(150),
-  other_memo    varchar(255)
+  ordertime	 integer,
+  product_id	integer,
+  quanlity	  float(10,4),
+  amount		float(10,4),
+  price		 float(10,4),
+  operator	  varchar(50),
+  others		varchar(150),
+  other_memo	varchar(255)
 );
 EOT;
 
@@ -213,16 +244,16 @@ EOT;
 
 		$sql = <<<EOT
 CREATE TABLE product (
-  id         integer PRIMARY KEY NOT NULL,
-  barcode    varchar(20),
-  class      varchar(100),
-  name       varchar(200),
-  unit       varchar(50),
-  price      float(10,4),
+  id		 integer PRIMARY KEY NOT NULL,
+  barcode	varchar(20),
+  class	  varchar(100),
+  name	   varchar(200),
+  unit	   varchar(50),
+  price	  float(10,4),
   quanlity   float(10,4),
   store_add  varchar(50),
   supplier   varchar(200),
-  p_memo     varchar(255)
+  p_memo	 varchar(255)
 );
 EOT;
 		echo $sql;
