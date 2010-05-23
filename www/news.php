@@ -19,6 +19,9 @@
 
 		$outArray = array();
 
+	// 取类别数据
+		$cateid = isset($_GET['ncate'])?intval($_GET['ncate']):0;
+
 	// 取网站公钥
 		$k = 'admin_pkey';
 		$sql = "SELECT v FROM config WHERE k=:key LIMIT 1";
@@ -54,9 +57,56 @@
 
 		$outArray['menu'] = (is_array($v))?json_decode($v[0]['v'], true):array();
 
+	// 取新闻类别信息
+		// 取请求类别信息
+			$sql = 'SELECT id, catename, pid FROM news_cate WHERE id=:id';
+			$sth = $db->prepare($sql);
+			$sth->execute(array(':id'=>$cateid));
+			$v = $sth->fetchAll();
+
+			$curcate = (is_array($v))?$v[0]:false;
+
+			if(false === $curcate){
+				exit($retOut(array('ret'=>'err', 'msg'=>'id 参数有误!')));
+			}
+
+		// 取子类别过滤条件
+			$reqid = ($cateid>0)?array(intval($curcate['id'])):array();
+
+			$filterids = ($cateid>0)?array($reqid[0]):array();
+
+			$fstr = "pid={$reqid[0]}";
+			while(count($reqid) >0){
+				$sql = "SELECT id, catename, pid FROM news_cate WHERE {$fstr}";
+
+				$sth = $db->prepare($sql);
+				$sth->execute();
+				$v = $sth->fetchAll();
+				$cate = (is_array($v))?$v:false;
+
+				if(is_array($cate)){
+					$reqid = array();
+					foreach($cate as $k=>$v){
+						$filterids[] = intval($v['id']);
+						$reqid[] = intval($v['id']);
+					}
+					$fstr = array();
+					foreach($reqid as $i){
+						$fstr[] = "pid={$i}";
+					}
+					$fstr = implode(' OR ', $fstr);
+				}else{
+					$reqid = array();
+					break;
+				}
+			}
+
+			$filterString = (count($filterids)>0)?"cateid IN ('".implode("', '", $filterids)."')":' 1=1 ';
+
 	// 取新闻
-		$sql = "SELECT id, title, content, crts FROM news ORDER BY id DESC LIMIT :p, :pp";
+		$sql = "SELECT id, title, content, crts, cateid FROM news LEFT JOIN rel_new_cate r ON newid = id WHERE {$filterString} GROUP BY id ORDER BY id DESC LIMIT :p, :pp";
 		$sth = $db->prepare($sql);
+
 		$ret = $sth->execute(array(':p'=>$p-1, ':pp'=>$pp));
 		$v = $sth->fetchAll();
 

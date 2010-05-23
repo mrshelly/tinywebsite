@@ -38,8 +38,15 @@
 		<div class="addnewForm">
 			<h3>修改新闻</h3>
 			<ul class="form">
-				<li><label>标题</label><input type="hidden" class="id" value="<?php echo $outArray['new']['id']; ?>" /><input type="text" class="title" value="<?php echo $outArray['new']['title']; ?>" /></li>
-				<li>
+				<li class="title"><label>标题</label><input type="hidden" class="id" value="<?php echo $outArray['new']['id']; ?>" /><input type="text" class="title" value="<?php echo $outArray['new']['title']; ?>" /></li>
+				<li class="cate"><label class="cate">分类</label>
+					<div class="catepath">
+						<li class="cate_<?php echo $catepid; ?>_<?php echo $cateInfo[$catepid]['pid']; ?>"><?php echo $cateInfo[$catepid]['catename']; ?></li>
+					</div>
+					<div class="catepool">
+					</div>
+				</li>
+				<li class="content">
 					<label>内容</label>
 					<textarea class="content" id="content"><?php echo htmlspecialchars(stripslashes($outArray['new']['content'])); ?></textarea></li>
 			</ul>
@@ -105,6 +112,87 @@
 			});
 
 		});
+
+		// 分类选择
+			var curSelectCateIds = <?php echo json_encode($cateids); ?>;
+			$("div.addnewForm ul.form li.cate label").click(function(){
+				var catePath = $('div.catepath li', $(this).parent());
+
+				var curcate = parseInt($(catePath[catePath.length-1]).attr('class').split('_')[1]);
+
+				$.get('/?mod=api&api=getNewsCateInfo&o=jssz&t='+Math.random(), {'id':curcate}, function(ret){
+					try{
+						eval(ret);
+					}catch(e){
+						var retObj = {'ret':'err', 'msg':'Unknow Error!'};
+					}
+
+					if((typeof(retObj['ret']) != 'undefined') && retObj['ret'] == 'ok'){
+						if(retObj['data']['sinfo'].length>0){
+							var subtmp = '';
+							for(var i=0; i<retObj['data']['sinfo'].length; i++){
+								var tplCateLabel = '<li class="cate_{cid}_{pid}"><input type="checkbox" class="chkcate" {checked} /><label>{cname}</label></li>'.replace(/{cid}/g, retObj['data']['sinfo'][i]['id']).replace(/{cname}/g, retObj['data']['sinfo'][i]['catename']).replace(/{pid}/g, retObj['data']['sinfo'][i]['pid']).replace(/{checked}/g, ((','+curSelectCateIds.join(',')+',').indexOf(','+retObj['data']['sinfo'][i]['id']+',') > -1)?'checked="true"':'');
+								subtmp += tplCateLabel;
+							}
+
+							var ptmp = '';
+							if(retObj['data']['cinfo']['id'] >0){
+								retObj['data']['pinfo'][retObj['data']['pinfo'].length] = retObj['data']['cinfo'];
+							}else{
+								retObj['data']['pinfo'][retObj['data']['pinfo'].length] = retObj['data']['sinfo'][0];
+							}
+
+							for(var i=0; i<retObj['data']['pinfo'].length; i++){
+								var tplCateLabel = '<li class="cate_{cid}_{pid}">{cname}</li>'.replace(/{cid}/g, retObj['data']['pinfo'][i]['id']).replace(/{cname}/g, retObj['data']['pinfo'][i]['catename']).replace(/{pid}/g, retObj['data']['pinfo'][i]['pid']);
+								ptmp += tplCateLabel;
+							}
+							$("div.addnewForm ul.form li.cate div.catepath").html(ptmp);
+
+							$("div.addnewForm ul.form li.cate div.catepath li").click(function(){
+								var cateInfo = {'id':parseInt($(this).attr('class').split('_')[1]), 'catename':$('label', $(this)).html(), 'pid':parseInt($(this).attr('class').split('_')[2])};
+
+								var lis = $("li", $(this).parent());
+								for(var i=lis.length-1; i>=0; i--){
+									if(parseInt($(lis[i]).attr('class').split('_')[1]) == cateInfo['id'] && parseInt($(lis[i]).attr('class').split('_')[2]) == cateInfo['pid']){
+										break;
+									}else{
+										$(lis[i]).remove();
+									}
+								}
+								$("div.addnewForm ul.form li.cate label.cate").click();
+								return false;
+							});
+
+							$("div.addnewForm ul.form li.cate div.catepool").html(subtmp);
+
+							$("div.addnewForm ul.form li.cate div.catepool li label").click(function(){
+								var cateInfo = {'id':parseInt($(this).parent().attr('class').split('_')[1]), 'catename':$(this).html(), 'pid':parseInt($(this).parent().attr('class').split('_')[2])};
+
+								if(cateInfo['id']>0){
+									$("input.chkcate", $(this).parent()).attr('checked', true);
+									if(cateInfo['pid'] == 0){
+										$("div.addnewForm ul.form li.cate label.cate").click();
+										return false;
+									}else{
+										var tplCateLabel = '<li class="cate_{cid}_{pid}">{cname}</li>'.replace(/{cid}/g, cateInfo['id']).replace(/{cname}/g, cateInfo['catename']).replace(/{pid}/g, cateInfo['pid']);
+										if($("div.addnewForm ul.form li.cate div.catepath li.cate_"+cateInfo['id']+"_"+cateInfo['pid']).size() == 0){
+											$("div.addnewForm ul.form li.cate div.catepath li:last").after(tplCateLabel);
+											$("div.addnewForm ul.form li.cate label.cate").click();
+											return false;
+										}
+									}
+								}
+
+							});
+						}
+					}else{
+						alert(retObj['ret']['msg']);
+					}
+				});
+				return false;
+			});
+
+			$("div.addnewForm ul.form li.cate label").click();
 
 	</script>
 </html>

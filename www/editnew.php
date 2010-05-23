@@ -83,6 +83,48 @@
 
 		$outArray['new'] = (is_array($v))?$v[0]:array();
 
+	// 取新闻类别信息
+		$sql = 'SELECT newid, cateid FROM rel_new_cate WHERE newid=:id GROUP BY cateid';
+		$sth = $db->prepare($sql);
+		$sth->execute(array(':id'=>$newid));
+		$v = $sth->fetchAll();
+
+		$v = (is_array($v))?$v:array();
+
+		$catepid = 0;
+		$cateInfo[$catepid] = array('id'=>0,'catename'=>'root', 'pid'=>0);
+		$cateids = array();
+		$cateInfo = array();
+		foreach($v as $vv){
+			$cateids[] = intval($vv['cateid']);
+			$cateInfo[$vv['cateid']] = array();
+		}
+
+	// 当前分类设置
+		if(count($cateids)>0){
+			$sql = 'SELECT id, catename, pid FROM news_cate WHERE id IN ('.implode(", ", $cateids).') GROUP BY id';
+			$sth = $db->prepare($sql);
+			$sth->execute();
+			$v = $sth->fetchAll();
+
+			$v = (is_array($v))?$v:array();
+
+			foreach($v as $vv){
+				$catepid = (intval($vv['pid'])>0)?intval($vv['pid']):0;
+				$cateInfo[$vv['id']] = $vv;
+			}
+		}
+
+			$sql = 'SELECT id, catename, pid FROM news_cate WHERE id = :id';
+			$sth = $db->prepare($sql);
+			$sth->execute(array(':id'=>$catepid));
+			$v = $sth->fetchAll();
+
+			$v = (is_array($v))?$v[0]:false;
+			if(is_array($v)){
+				$cateInfo[$v['id']] = $v;
+			}
+
 /* 组织SQL语句 */
 
 		require_once $rootPath."/tpl/editnew.php";
