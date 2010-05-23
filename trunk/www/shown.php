@@ -10,7 +10,10 @@
 		$p = isset($_GET['p'])?intval($_GET['p']):1;
 		$start=($p-1)*$pp;
 
-	/* 初始化数据库实例 */
+	// 身份认证
+		require_once $rootPath."/lib/lib.php";
+
+	// 初始化数据库实例
 		$db = new PDO('sqlite:'.$siteCfg['dbset']['path'].'/'.$siteCfg['dbset']['db']); 
 		$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_ASSOC);
 
